@@ -1,5 +1,6 @@
 # JavaWebApplication
 ## 项目模板
+* 项目基于JDK1.8+Tomcat9.0+MySQL5.6运行
 * 模板主要采用的框架有:
     * Spring
     * Shiro
