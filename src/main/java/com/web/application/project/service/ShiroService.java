@@ -1,4 +1,4 @@
-package com.web.application.project.shiro;
+package com.web.application.project.service;
 
 import com.web.application.project.entity.Admin;
 
