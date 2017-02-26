@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"  
+	xmlns:jee="http://www.springframework.org/schema/jee" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:util="http://www.springframework.org/schema/util"  
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.3.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/task  
+		http://www.springframework.org/schema/task/spring-task-4.3.xsd
+		http://www.springframework.org/schema/util
+		http://www.springframework.org/schema/util/spring-util-4.3.xsd
+		http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket.xsd">
+<!-- 开启注解扫描，支持IOC -->
+	<context:component-scan base-package="com.web.application" />
+<!-- 开启MVC注解，支持Spring MVC -->
+	<mvc:annotation-driven />
+<!-- task任务扫描注解 -->  
+	<task:annotation-driven/>  	
+<!-- 开启AOP -->	
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+<!-- 开启properties读取 -->
+	<context:property-placeholder file-encoding="UTF-8" location="classpath*:properties/*.properties" />
+<!-- view渲染的前缀后缀配置 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" id="irvr">
+		<property name="prefix" value="/WEB-INF/"/>
+		<property name="suffix" value=".jsp"/>
+	</bean>
+<!-- 文件上传大小管理 -->  
+    <bean id="multipartResolver"    
+        class="org.springframework.web.multipart.commons.CommonsMultipartResolver">    
+        <!-- one of the properties available; the maximum file size in bytes -->    
+        <property name="maxUploadSize" value="204800000" />
+        <!-- 每次上传占用的内存大小 --> 
+        <property name="maxInMemorySize" value="4096"/>
+    </bean>
+<!-- 过滤静态文件 -->
+    <mvc:resources mapping="/static/**" location="/static/"/>
+<!-- spring-mobile的联合配置，用于判断访问源 -->
+	<mvc:interceptors>
+		<bean class="org.springframework.mobile.device.DeviceResolverHandlerInterceptor" />
+		<bean class="org.springframework.mobile.device.site.SitePreferenceHandlerInterceptor" />
+	</mvc:interceptors>
+	<mvc:annotation-driven>
+		<mvc:argument-resolvers>
+			<bean class="org.springframework.mobile.device.DeviceWebArgumentResolver" />
+			<bean class="org.springframework.mobile.device.site.SitePreferenceWebArgumentResolver" />
+		</mvc:argument-resolvers>
+	</mvc:annotation-driven>
+<!-- 注册拦截器 -->
+<!-- 第一个*代表Controller类的访问路径；
+	第二个*代表Controller方法的访问路径；
+	即所有的方法都要受此拦截器检查。-->
+<mvc:interceptors>
+	<mvc:interceptor>
+		<mvc:mapping path="/**" />
+		<mvc:exclude-mapping path="/static/**"/> 
+		<bean class="com.web.application.project.interceptor.FrequencyInterceptor" />
+	</mvc:interceptor>
+</mvc:interceptors>
+<!-- 错误以及日志管理 -->
+	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+	        <props>
+                <!--shiro异常处理-->
+                <prop key="org.apache.shiro.authz.UnauthorizedException">redirect:/login</prop>
+                <prop key="org.apache.shiro.authz.UnauthenticatedException">redirect:/login</prop>
+                <prop key="java.lang.Exception">404</prop>
+                <prop key="java.lang.Throwable">404</prop>
+            </props>
+	    </property>
+	    <property name="statusCodes">
+             <props>
+                 <prop key="500">500</prop>
+                 <prop key="404">404</prop>
+             </props>
+         </property>
+         <!-- 设置日志输出级别，不定义则默认不输出警告等错误日志信息 -->     
+         <property name="warnLogCategory" value="WARN"></property>     
+         <!-- 默认错误页面，当找不到上面mappings中指定的异常对应视图时，使用本默认配置 -->     
+         <property name="defaultErrorView" value="error/404"></property>
+         <!-- 默认HTTP状态码 -->     
+         <property name="defaultStatusCode" value="500"></property>     
+	</bean>
+<!--Spring-Redis相关配置-->
+	<bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" destroy-method="destroy">
+		<property name="hostName" value="127.0.0.1"></property>
+		<property name="password" value="123456"></property>
+		<property name="port" value="6379"></property>
+		<property name="poolConfig" ref="jedisPoolConfig"></property>
+		<property name="usePool" value="true"></property>
+	</bean>
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxTotal" value="32"></property>
+		<property name="maxIdle" value="6"></property>
+		<property name="testOnBorrow" value="true" />
+	</bean>
+<!--redisTemplate配置,若使用其他数据类型,需要配置指定类型的Template-->
+	<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+		<property name="connectionFactory" ref="jedisConnectionFactory"></property>
+		<property name="keySerializer">
+			<bean class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
+		</property>
+		<property name="valueSerializer">
+			<bean class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer"/>
+		</property>
+	</bean>
+</beans>

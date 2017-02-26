@@ -1,0 +1,107 @@
+/*垂直居中*/
+.verticalAlign{ vertical-align:middle; display:inline-block; height:100%; margin-left:-1px;}
+
+.xcConfirm .xc_layer{
+	position: fixed; 
+	top: 0; 
+	left: 0; 
+	width: 100%; 
+	height: 100%; 
+	background-color: #000; 
+	opacity: 0.5; 
+	z-index: 2147000000;
+}
+.xcConfirm .popBox{
+	position: fixed; 
+	left: 50%; 
+	top: 50%; 
+	background-color: #ffffff; 
+	z-index: 2147000001; 
+	width: 350px; 
+	padding-bottom:20px;
+	margin-left: -175px; 
+	margin-top: -200px; 
+	border-radius: 5px; 
+	font-weight: bold; 
+	color: #535e66;
+}
+.xcConfirm .popBox .ttBox{
+	height: 30px; 
+	line-height: 30px; 
+	padding: 8px 30px; 
+	border-bottom: solid 1px #eef0f1;
+}
+.xcConfirm .popBox .ttBox .tt{
+	font-size: 16px; 
+	display: block; 
+	float: left; 
+	height: 30px; 
+	position: relative;
+}
+.xcConfirm .popBox .ttBox .clsBtn{
+	display: block; 
+	cursor: pointer; 
+	width: 12px; 
+	height: 12px; 
+	position: absolute; 
+	top: 15px; 
+	right: 30px; 
+	background: url(./icons.png) -30px -62px no-repeat;
+}
+.xcConfirm .popBox .txtBox{
+	margin: 30px 40px;
+	overflow: hidden;
+	text-align:center;
+}
+.xcConfirm .popBox .txtBox .bigIcon{
+	 margin-right: 20px; 
+	 width: 31px; 
+	 height: 31px; 
+	 background-image: url(./icons.png);
+	 background-repeat: no-repeat;
+	 background-position: 30px 0px;
+	 display: inline-block;
+	 
+	  }
+.xcConfirm .popBox .txtBox p{
+	line-height: 26px; 
+	overflow-x: hidden; 
+	overflow-y: auto;
+	display: inline-block;
+}
+.xcConfirm .popBox .txtBox p input{
+	width: 328px; 
+	height: 30px; 
+	border: solid 1px #ccc; 
+	font-size: 16px;
+	margin-top: 15px;
+	bordder-radius:4px; 
+	outline:none;
+	padding: 0 5px
+}
+.xcConfirm .popBox .btnArea{
+	border-top: solid 1px #eef0f1;
+}
+.xcConfirm .popBox .btnGroup{ text-align: center;}
+.xcConfirm .popBox .btnGroup .sgBtn{
+	margin-top: 14px; 
+	/*margin-right: 10px;*/
+}
+.xcConfirm .popBox .sgBtn{
+	display:inline-block; 
+	cursor: pointer; 
+	width: 70px; 
+	height: 30px; 
+	line-height: 30px;
+	 text-align: center;
+	  color: #FFFFFF; 
+	  border-radius: 5px;}
+.xcConfirm .popBox .sgBtn.ok{
+	background-color: #ff6642; 
+	color: #FFFFFF;
+}
+.xcConfirm .popBox .sgBtn.cancel{
+	background-color: #666666;
+	 color: #FFFFFF;
+	 margin-left:10px;
+}

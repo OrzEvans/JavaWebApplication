@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.web.application.project.dao.ShiroDao">
+	<!--进行登录认证使用的,即根据管理员名称取得密码进行认证-->
+	<select id="findByAccount" parameterType="java.lang.String" resultType="com.web.application.project.entity.Admin">
+		SELECT admin_id,account,password,name FROM p_admin WHERE account=#{account} AND is_locked='N' AND is_delete='N'
+	</select>
+	<!--根据管理员账号查询出该用户对应的所有角色的标记名称(该标记名称千万不要用中文)-->
+	<select id="findAllRoleByAdminId" parameterType="java.lang.Integer" resultType="java.lang.String">
+        SELECT role_flag FROM p_role WHERE role_id IN (
+            SELECT role_id FROM admin_role WHERE admin_id=#{admin_id}
+        ) AND is_delete='N'
+	</select>
+    <!--查询出一个管理员对应的所有权限数据-->
+    <select id="findAllActionByAdminId" parameterType="java.lang.Integer" resultType="java.lang.String">
+        SELECT action_flag FROM p_action WHERE action_id IN (
+            SELECT action_id FROM role_action WHERE role_id IN (
+                SELECT role_id FROM admin_role WHERE admin_id=#{admin_id}
+            )
+        ) AND is_delete='N'
+    </select>
+    <update id="updateLastLoginTime">
+        UPDATE p_admin SET last_login_time =#{lastLoginTime} WHERE admin_id=#{adminId}
+    </update>
+</mapper>
