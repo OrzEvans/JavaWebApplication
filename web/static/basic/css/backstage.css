@@ -1,0 +1,29 @@
+/*网站设置页面*/
+.wssu{
+	background: #FFFFFF;
+	width:49.5%;
+	overflow: hidden;
+	float: left;	
+	-webkit-border-radius:4px ;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+.wssu .wssu-con{
+	line-height: 35px;
+	width: 100%;
+	overflow: hidden;
+}
+.wssu .wssu-con li{
+	float: left;
+	line-height: 35px;
+	overflow: hidden;
+}
+.wssu .wssu-con li:first-child{
+	width:20%;
+	text-align: right;
+	margin-right: 15px;
+}
+.wssu .wssu-con li:last-child{
+	text-align: left;
+	width: 70%;
+}

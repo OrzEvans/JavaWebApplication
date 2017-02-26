@@ -1,1 +1,10 @@
 # JavaWebApplication
+## 项目模板
+* 模板主要采用的框架有:
+    * Spring
+    * Shiro
+    * Mybatis
+    * Redis
+    * Druid
+    * MySQL
+* 该模板主要用于后台使用,还待优化模板,项目中有sql文件,必须执行后才可以直接使用运行
