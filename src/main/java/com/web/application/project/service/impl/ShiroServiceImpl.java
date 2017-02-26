@@ -1,7 +1,8 @@
-package com.web.application.project.shiro;
+package com.web.application.project.service.impl;
 
 import com.web.application.project.dao.ShiroDao;
 import com.web.application.project.entity.Admin;
+import com.web.application.project.service.ShiroService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
