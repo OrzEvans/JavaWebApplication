@@ -4,7 +4,7 @@
 package com.web.application.project.interceptor;
 
 import com.web.application.project.entity.FrequencyStruct;
-import com.web.application.tools.DevelopTools;
+import com.web.application.tools.DevTools;
 import com.web.application.tools.OptionEnum;
 import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
@@ -88,7 +88,7 @@ public class FrequencyInterceptor implements HandlerInterceptor{
 
 			long currentTimeMilles = System.currentTimeMillis() / 1000;
 			//Nginx获取ip
-			String ip = DevelopTools.getIpAddress(request);
+			String ip = DevTools.getIpAddress(request);
 			//普通获取ip
 //        String ip = getRemoteIp(request);
 			String key = name + "_" + ip;
@@ -287,15 +287,15 @@ public class FrequencyInterceptor implements HandlerInterceptor{
 			StringBuffer sb=new StringBuffer();
 			if("session".equalsIgnoreCase(type)){
 				sb.append("超过Session限制总数：").append("当前禁止对象为[").append(frequencyStruct.getUniqueKey()).append("],当前限制总数为[").append(optionEnum.getFREQUENCY_FORBID_COUNT()).append("],禁止ip为[")
-						.append(ip).append("],禁止开始时间为[").append(DevelopTools.getFormatedDateString(8)).append("],当前禁止时长为[")
+						.append(ip).append("],禁止开始时间为[").append(DevTools.getFormatedDateString(8)).append("],当前禁止时长为[")
 						.append(optionEnum.getFREQUENCY_FORBID_TIME()).append("秒]");
 			}else if("visit".equalsIgnoreCase(type)){
 				sb.append("超过路径限制总数：").append("当前禁止对象为[").append(frequencyStruct.getUniqueKey()).append("],当前限制总数为[").append(optionEnum.getFREQUENCY_FORBID_VISIT_COUNT()).append("],禁止ip为[")
-						.append(ip).append("],禁止开始时间为[").append(DevelopTools.getFormatedDateString(8)).append("],当前禁止时长为[")
+						.append(ip).append("],禁止开始时间为[").append(DevTools.getFormatedDateString(8)).append("],当前禁止时长为[")
 						.append(optionEnum.getFREQUENCY_FORBID_VISIT_TIME()).append("秒]");
 			}else if("ip".equalsIgnoreCase(type)){
 				sb.append("超过IP限制总数：").append("当前禁止对象为[").append(frequencyStruct.getUniqueKey()).append("],当前限制总数为[").append(optionEnum.getFREQUENCY_FORBID_IP_COUNT()).append("],禁止ip为[")
-						.append(ip).append("],禁止开始时间为[").append(DevelopTools.getFormatedDateString(8)).append("],当前禁止时长为[")
+						.append(ip).append("],禁止开始时间为[").append(DevTools.getFormatedDateString(8)).append("],当前禁止时长为[")
 						.append(optionEnum.getFREQUENCY_FORBID_IP_TIME()).append("秒]");
 			}else{
 				return;
