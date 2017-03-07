@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.web.application.project.dao.TestDao">
+	<!--LRU移除最长时间不被使用的对象。-->
+	<!--flushInterval刷新间隔(毫秒),不设置则没有刷新间隔,缓存仅仅调用语句时刷新-->
+	<!--size缓存的对象数目-->
+	<!--<cache eviction="LRU"  size="1024" />-->
+	<select id="testDao" resultType="java.lang.String" >
+		SELECT current_timestamp FROM DUAL
+	</select>
+</mapper>

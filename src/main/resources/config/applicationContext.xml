@@ -117,5 +117,12 @@
 		<property name="valueSerializer">
 			<bean class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer"/>
 		</property>
+		<property name="hashKeySerializer">
+			<bean class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
+		</property>
+		<property name="hashValueSerializer">
+			<bean class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer"/>
+		</property>
+		<property name="enableTransactionSupport" value="true"></property>
 	</bean>
 </beans>

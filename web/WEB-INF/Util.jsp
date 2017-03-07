@@ -18,7 +18,7 @@
 <meta name="description" content="描述">
 <meta name="author" content="作者">
 <meta name="keyword" content="关键字">
-<link rel="shortcut icon" href="favicon.gif">
+<link rel="shortcut icon" href="static/basic/img/ico/logo.ico">
 <meta http-equivmetahttp-equiv="x-ua-compatible"content="IE=7"/>
 <meta name="renderer" content="webkit|ie-comp|ie-stand"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -36,5 +36,4 @@
 <script src="static/basic/js/respond.min.js"></script>
 <![endif]-->
 <script type="text/javascript" src="static/basic/js/jquery-3.0.0.min.js" ></script>
-<script type="text/javascript" src="static/basic/myAlert/myAlert.js"></script>
 <script type="text/javascript" src="static/basic/util/util.js" ></script>

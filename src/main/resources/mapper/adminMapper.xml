@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.web.application.project.dao.AdminDao">
+	<!--LRU移除最长时间不被使用的对象。-->
+	<!--flushInterval刷新间隔(毫秒),不设置则没有刷新间隔,缓存仅仅调用语句时刷新-->
+	<!--size缓存的对象数目-->
+	<!--<cache eviction="LRU"  size="1024" />-->
+	<!--获取管理员列表数据-->
+	<select id="getAdminList" resultType="com.web.application.project.entity.Admin" >
+		SELECT admin_id,account,name,department,comment,last_login_time,is_locked FROM p_admin WHERE is_delete='N'LIMIT #{begin},#{pageSize}
+	</select>
+	<!--获取管理员总数-->
+	<select id="getAdminListCount" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM p_admin WHERE is_delete='N'
+	</select>
+	<!--获取所有角色名称-->
+    <select id="getAdminRoleList" resultType="java.util.Map">
+        SELECT DISTINCT(role_name),role_id,role_flag FROM p_role WHERE is_delete='N'
+    </select>
+    <!--获取所有部门-->
+    <select id="getAdminDepartmentList" resultType="java.lang.String">
+        SELECT DISTINCT(department) FROM p_admin WHERE is_delete='N'
+    </select>
+	<!--搜索管理员-->
+	<select id="getSearchAdminList" resultType="com.web.application.project.entity.Admin" >
+		SELECT admin_id,account,name,department,comment,last_login_time,is_locked
+		FROM p_admin
+		<where>
+			<if test="roleId !=null and roleId !='' ">
+				admin_id IN (SELECT DISTINCT(admin_id) FROM admin_role WHERE role_id=#{roleId})
+			</if>
+			<if test="admin.account !=null and admin.account !='' ">
+				AND account LIKE #{admin.account}
+			</if>
+			<if test="admin.name !=null and admin.name !='' ">
+				AND name LIKE #{admin.name}
+			</if>
+            <if test="admin.department !=null and admin.department !='' and admin.department !='0' ">
+                AND department =#{admin.department}
+            </if>
+			AND is_delete='N'
+		</where>
+		LIMIT #{admin.begin},#{admin.pageSize}
+	</select>
+	<!--获取搜索的管理员总数-->
+	<select id="getSearchAdminCount" resultType="java.lang.Integer">
+		SELECT COUNT(*)
+		FROM p_admin
+		<where>
+			<if test="roleId !=null and roleId !='' ">
+				admin_id IN (SELECT DISTINCT(admin_id) FROM admin_role WHERE role_id=#{roleId})
+			</if>
+			<if test="admin.account !=null and admin.account !='' ">
+				AND account=#{admin.account}
+			</if>
+			<if test="admin.name !=null and admin.name !='' ">
+				AND name =#{admin.name}
+			</if>
+            <if test="admin.department !=null and admin.department !='' and admin.department !='0' ">
+                AND department =#{admin.department}
+            </if>
+			AND is_delete='N'
+		</where>
+	</select>
+	<!--锁定/解锁管理员-->
+	<update id="updateAdminLockStatus" >
+		UPDATE p_admin SET is_locked=#{isLocked} WHERE admin_id=#{adminId}
+	</update>
+	<!--根据管理员id删除管理员-->
+	<update id="removeAdminById" parameterType="java.lang.Integer">
+		UPDATE p_admin SET is_delete='Y' WHERE admin_id=#{adminId}
+	</update>
+	<!--增加管理员-->
+	<insert id="createAdmin" parameterType="com.web.application.project.entity.Admin" useGeneratedKeys="true" keyProperty="admin_id">
+		INSERT INTO p_admin (account,password,name,department,comment,create_time) VALUES (
+		#{account},
+		#{password},
+		#{name},
+		#{department},
+		#{comment},
+		#{create_time}
+		)
+	</insert>
+    <!--更新管理员-->
+    <update id="updateAdmin" parameterType="com.web.application.project.entity.Admin">
+        UPDATE p_admin
+		<set>
+			<if test="account!=null and account!='' ">
+				account=#{account},
+			</if>
+			<if test="password!=null and password!=''">
+				password=#{password},
+			</if>
+			<if test="name!=null and name!=''">
+				name=#{name},
+			</if>
+			<if test="department!=null and department!=''">
+				department=#{department},
+			</if>
+			<if test="comment!=null and comment!=''">
+				comment=#{comment}
+			</if>
+		</set>
+        WHERE admin_id=#{admin_id}
+    </update>
+    <!--增加管理员角色-->
+    <insert id="createAdminRole">
+        INSERT INTO admin_role (admin_id,role_id) VALUES (
+        #{adminId},#{roleId}
+        )
+    </insert>
+    <!--删除管理员角色-->
+    <delete id="removeAdminRoleById" parameterType="java.lang.Integer">
+        DELETE FROM admin_role WHERE admin_id=#{adminId}
+    </delete>
+	<!--查询管理员账号是否存在-->
+	<select id="getAdminCountByAccount" parameterType="java.lang.String" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM p_admin WHERE account=#{account} AND is_delete='N'
+	</select>
+	<!--根据管理员id获取管理员详情-->
+	<select id="getAdminById" parameterType="java.lang.Integer" resultType="com.web.application.project.entity.Admin">
+		SELECT admin_id,account,password,name,department,comment FROM p_admin WHERE admin_id=#{admin_id} AND is_delete='N'
+	</select>
+	<!--根据管理员id查询出该用户对应的所有角色-->
+	<select id="getRoleById" parameterType="java.lang.Integer" resultType="java.util.Map">
+        SELECT role_id,role_name,role_flag FROM p_role WHERE role_id IN (
+            SELECT role_id FROM admin_role WHERE admin_id=#{admin_id}
+        ) AND is_delete='N'
+	</select>
+	<!--查询出指定角色ID的所有权限-->
+	<select id="getAllActionByRoleId" parameterType="java.lang.Integer" resultType="java.util.Map">
+		SELECT action_id,action_name FROM p_action WHERE action_id IN (
+			SELECT action_id FROM role_action WHERE role_id =#{roleId}
+		) AND is_delete='N'
+	</select>
+	<!--获取所有角色名称-->
+	<select id="getRoleList" resultType="java.util.Map">
+		SELECT DISTINCT(role_name),role_id,role_flag FROM p_role WHERE is_delete='N' LIMIT #{begin},#{pageSize}
+	</select>
+	<!--查询角色名称个数-->
+	<select id="getRoleCountByRoleName" parameterType="java.lang.String" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM p_role WHERE role_name=#{roleName} AND is_delete='N'
+	</select>
+	<!--获取所有权限-->
+	<select id="getAllAction" resultType="java.util.Map">
+		SELECT action_id,action_name FROM p_action WHERE is_delete='N'
+	</select>
+	<!--根据角色id获取角色信息-->
+	<select id="getRoleFlagByRoleId" parameterType="java.lang.Integer" resultType="java.lang.String">
+		SELECT role_flag FROM p_role WHERE role_id=#{roleId} AND is_delete='N'
+	</select>
+	<!--获取指定角色标记的个数-->
+	<select id="getRoleFlagCountByFlagName" parameterType="java.lang.String" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM p_role WHERE role_flag=#{roleFlag} AND is_delete='N'
+	</select>
+	<!--查询拥有指定角色的用户个数-->
+	<select id="getAdminCountByRoleId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM admin_role WHERE role_id=#{roleId} AND admin_id IN (
+			SELECT admin_id FROM p_admin WHERE is_delete='N'
+		)
+	</select>
+	<!--删除角色-->
+	<update id="removeRoleById" parameterType="java.lang.Integer">
+		UPDATE p_role SET is_delete='Y' WHERE role_id=#{roleId}
+	</update>
+    <!--增加角色-->
+    <insert id="createRole" parameterType="com.web.application.project.entity.Role" useGeneratedKeys="true" keyProperty="role_id">
+        INSERT INTO p_role (role_name,role_flag)
+        VALUES
+        (#{role_name},#{role_flag})
+    </insert>
+    <!--更新角色-->
+    <update id="updateRole" parameterType="com.web.application.project.entity.Role">
+        UPDATE p_role SET role_name=#{role_name},role_flag=#{role_flag}
+        WHERE role_id=#{role_id}
+    </update>
+    <!--删除指定角色的所有权限-->
+    <delete id="removeActionByRoleId" parameterType="java.lang.Integer">
+         DELETE FROM role_action WHERE role_id=#{roleId}
+    </delete>
+    <!--增加角色的权限-->
+    <insert id="createActionByRoleId">
+        INSERT INTO role_action (role_id,action_id)
+        VALUES (#{roleId},#{actionId})
+    </insert>
+</mapper>

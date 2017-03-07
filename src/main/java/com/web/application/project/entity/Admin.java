@@ -1,5 +1,7 @@
 package com.web.application.project.entity;
 
+import com.web.application.project.annotation.Search;
+import com.web.application.project.annotation.SearchField;
 import net.sf.json.JSONObject;
 
 import java.io.Serializable;
@@ -13,8 +15,10 @@ public class Admin extends Page implements Serializable{
 
     private Integer admin_id;//管理员id
     private String language_code;//语言代码
+    @SearchField
     private String account;//管理员账号
     private String password;//管理员密码
+    @SearchField
     private String name;//管理员姓名
     private String department;//部门
     private String comment;//备注

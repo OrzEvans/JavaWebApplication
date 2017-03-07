@@ -26,6 +26,7 @@
 		<meta name="description" content="">
 		<meta name="author" content="">
 		<meta name="keyword" content="">
+		<link rel="shortcut icon" href="static/basic/img/ico/logo.ico">
 		<link rel="stylesheet" href="<%=basePath%>/static/basic/css/login.css" type="text/css">
 		<script type="text/javascript" src="<%=basePath%>/static/basic/js/jquery-3.0.0.min.js" ></script>
 		<script type="text/javascript" src="<%=basePath%>/static/basic/util/util.js" ></script>

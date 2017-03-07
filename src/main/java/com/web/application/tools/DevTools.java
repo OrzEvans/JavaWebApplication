@@ -1,5 +1,5 @@
 /**
- * 文件名称:DevelopTools.java 创建者:Evans 创建日期:2017年1月11日
+ * 文件名称:DevTools.java 创建者:Evans 创建日期:2017年1月11日
  */
 package com.web.application.tools;
 
@@ -8,6 +8,7 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
+import com.web.application.project.annotation.SearchField;
 import net.sf.json.JSONObject;
 import sun.misc.BASE64Decoder;
 
@@ -19,13 +20,13 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * DevelopTools
+ * DevTools
  * @Title  开发工具类
  * @author Evans
  * @date 2017年1月11日
  * @version 1.0
  */
-public class DevelopTools {
+public class DevTools {
 	
 	/**
 	 * 根据时区获取时间
@@ -308,7 +309,7 @@ public class DevelopTools {
 					setMethod = tClass.getMethod("set" + methodName,String.class);
 					Object value=getMethod.invoke(t);
 					String str = (String)value;
-					String newStr= DevelopTools.filterSpecialSymbol(str);
+					String newStr= DevTools.filterSpecialSymbol(str);
 					setMethod.invoke(t, newStr);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -325,9 +326,99 @@ public class DevelopTools {
 	 * @author Faker
 	 */
 	public static boolean checkInputSqlInj(String str){
-		if(str.equals(DevelopTools.filterSpecialSymbol(str))){
+		if(str.equals(DevTools.filterSpecialSymbol(str))){
 			return false;
 		}
 		return true;
+	}
+	/**
+	 * 对实体类中需要模糊查询的属性增加%号
+	 * @param t
+	 * @param <T>
+	 * @return
+	 */
+	public static <T> T addLikeParameterWithObject(T t){
+		Class<? extends Object> tClass = t.getClass();
+		Field[] fields =tClass.getDeclaredFields();
+		Method getMethod = null;
+		Method setMethod = null;
+		for (Field field : fields) {
+			Class<?> type = field.getType();
+			SearchField search=field.getAnnotation(SearchField.class);
+			if(search!=null&&String.class.equals(type)){
+				String fieldName=field.getName();
+				String methodName = fieldName.substring(0, 1).toUpperCase()+ fieldName.substring(1);
+				try {
+					getMethod = tClass.getMethod("get" + methodName);
+					setMethod = tClass.getMethod("set" + methodName,String.class);
+					Object value=getMethod.invoke(t);
+					String str = (String)value;
+					String newStr=DevTools.addLikeParameter(str);
+					setMethod.invoke(t, newStr);
+				} catch (Exception e) {
+					e.printStackTrace();
+					return t;
+				}
+			}
+		}
+		return t;
+	}
+
+	/**
+	 * 去除实体类中需要模糊查询的属性的%号
+	 * @param t
+	 * @param <T>
+	 * @return
+	 */
+	public static <T> T removeLikeParameterWithObject(T t){
+		Class<? extends Object> tClass = t.getClass();
+		Field[] fields =tClass.getDeclaredFields();
+		Method getMethod = null;
+		Method setMethod = null;
+		for (Field field : fields) {
+			Class<?> type = field.getType();
+			SearchField search=field.getAnnotation(SearchField.class);
+			if(search!=null&&String.class.equals(type)){
+				String fieldName=field.getName();
+				String methodName = fieldName.substring(0, 1).toUpperCase()+ fieldName.substring(1);
+				try {
+					getMethod = tClass.getMethod("get" + methodName);
+					setMethod = tClass.getMethod("set" + methodName,String.class);
+					Object value=getMethod.invoke(t);
+					String str = (String)value;
+					String newStr=DevTools.removeLikeParameter(str);
+					setMethod.invoke(t, newStr);
+				} catch (Exception e) {
+					e.printStackTrace();
+					return t;
+				}
+			}
+		}
+		return t;
+	}
+	/**
+	 * 设置模糊查询参数
+	 * @param parameter 模糊查询参数
+	 * @return 拼接%后的参数
+	 */
+	public static String addLikeParameter(String parameter){
+		if(parameter ==null||"".equals(parameter)){
+			return null;
+		}
+		StringBuffer sb = new StringBuffer();
+		sb.append("%").append(parameter.trim()).append("%");
+		return sb.toString();
+	}
+	/**
+	 * 去掉模糊查询参数
+	 * @param parameter 带%的参数
+	 * @return 去掉%后的参数
+	 */
+	public static String removeLikeParameter(String parameter){
+		if(parameter ==null||"".equals(parameter)){
+			return null;
+		}
+		parameter = parameter.replace("%", "");
+		return parameter;
 	}
 }

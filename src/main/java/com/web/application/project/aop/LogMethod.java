@@ -3,10 +3,10 @@
  */
 package com.web.application.project.aop;
 
+import com.web.application.tools.DevTools;
 import org.aspectj.lang.JoinPoint;
 
 import com.web.application.project.entity.LogEntity;
-import com.web.application.tools.DevelopTools;
 
 /**
  * LogMethod
@@ -38,7 +38,7 @@ public interface LogMethod {
 		logEntity.setOperator_id(logContext.getOperatorId());
 		logEntity.setOperation_model(logContext.getOperationModel());
 		logEntity.setOperation_content(logContext.getOperationContent());
-		logEntity.setOperation_time(DevelopTools.getFormatedDateString(8));
+		logEntity.setOperation_time(DevTools.getFormatedDateString(8));
 		logEntity.setOperator_type("默认类型");
 		return logEntity;
 	}
